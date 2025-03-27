@@ -66,7 +66,7 @@ class $Ref<S extends object = JSONSchema, O extends ParserOptions<S> = ParserOpt
       this.errors = [];
     }
 
-    const existingErrors = this.errors.map(({ footprint }: any) => footprint);
+    let existingErrors = this.errors.map(({ footprint }: any) => footprint);
 
     // the path has been almost certainly set at this point,
     // but just in case something went wrong, normalizeError injects path if necessary
@@ -117,9 +117,9 @@ class $Ref<S extends object = JSONSchema, O extends ParserOptions<S> = ParserOpt
    * @returns
    */
   resolve(path: string, options?: O, friendlyPath?: string, pathFromRoot?: string) {
-    const pointer = new Pointer<S, O>(this, path, friendlyPath);
+    let pointer = new Pointer<S, O>(this, path, friendlyPath);
     try {
-      const resolved = pointer.resolve(this.value, options, pathFromRoot);
+      let resolved = pointer.resolve(this.value, options, pathFromRoot);
       if (resolved.value === nullSymbol) {
         resolved.value = null;
       }
@@ -151,7 +151,7 @@ class $Ref<S extends object = JSONSchema, O extends ParserOptions<S> = ParserOpt
    * @param value - The value to assign
    */
   set(path: string, value: any) {
-    const pointer = new Pointer(this, path);
+    let pointer = new Pointer(this, path);
     this.value = pointer.set(this.value, value);
     if (this.value === nullSymbol) {
       this.value = null;
@@ -280,15 +280,15 @@ class $Ref<S extends object = JSONSchema, O extends ParserOptions<S> = ParserOpt
     resolvedValue: S,
   ): S {
     if (resolvedValue && typeof resolvedValue === "object" && $Ref.isExtended$Ref($ref)) {
-      const merged = {};
-      for (const key of Object.keys($ref)) {
+      let merged = {};
+      for (let key of Object.keys($ref)) {
         if (key !== "$ref") {
           // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
           merged[key] = $ref[key];
         }
       }
 
-      for (const key of Object.keys(resolvedValue)) {
+      for (let key of Object.keys(resolvedValue)) {
         if (!(key in merged)) {
           // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
           merged[key] = resolvedValue[key];

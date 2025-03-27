@@ -1,4 +1,4 @@
-const name = {
+let name = {
   required: ["first", "last"],
   type: "object",
   properties: {
@@ -31,7 +31,7 @@ const name = {
   title: "name",
 };
 
-const dereferencedSchema = {
+let dereferencedSchema = {
   title: "Deep Schema",
   type: "object",
   definitions: {

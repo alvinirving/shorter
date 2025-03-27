@@ -6,10 +6,10 @@ import { expect } from "vitest";
 
 describe("$refs that include slashes", () => {
   it("should parse successfully", async () => {
-    const parser = new $RefParser();
+    let parser = new $RefParser();
     await parser.parse(path.rel("test/specs/substrings/definitions/slash-strings.yaml"));
-    const $refs = parser.$refs;
-    const ref = $refs.get(
+    let $refs = parser.$refs;
+    let ref = $refs.get(
       "#/channels/smartylighting/streetlights/1/0/event/{streetlightId}/lighting/measured/parameters",
     );
     expect(ref).to.deep.equal({
@@ -23,8 +23,8 @@ describe("$refs that include slashes", () => {
   });
 
   it("should parse trailing spaces successfully", async () => {
-    const parser = new $RefParser();
-    const derefed = await parser.dereference({
+    let parser = new $RefParser();
+    let derefed = await parser.dereference({
       swagger: "2.0",
       paths: {
         somepath: {

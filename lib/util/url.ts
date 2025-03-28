@@ -1,24 +1,24 @@
 import convertPathToPosix from "./convert-path-to-posix";
 import path, { win32 } from "path";
 
-const forwardSlashPattern = /\//g;
-const protocolPattern = /^(\w{2,}):\/\//i;
-const jsonPointerSlash = /~1/g;
-const jsonPointerTilde = /~0/g;
+var forwardSlashPattern = /\//g;
+var protocolPattern = /^(\w{2,}):\/\//i;
+var jsonPointerSlash = /~1/g;
+var jsonPointerTilde = /~0/g;
 
 import { join } from "path";
 import { isWindows } from "./is-windows";
 
 // RegExp patterns to URL-encode special characters in local filesystem paths
-const urlEncodePatterns = [
+var urlEncodePatterns = [
   [/\?/g, "%3F"],
   [/#/g, "%23"],
 ] as [RegExp, string][];
 
 // RegExp patterns to URL-decode special characters for local filesystem paths
-const urlDecodePatterns = [/%23/g, "#", /%24/g, "$", /%26/g, "&", /%2C/g, ",", /%40/g, "@"];
+var urlDecodePatterns = [/%23/g, "#", /%24/g, "$", /%26/g, "&", /%2C/g, ",", /%40/g, "@"];
 
-export const parse = (u: string | URL) => new URL(u);
+export var parse = (u: string | URL) => new URL(u);
 
 /**
  * Returns resolved target URL relative to a base URL in a manner similar to that of a Web browser resolving an anchor tag HREF.
@@ -27,12 +27,12 @@ export const parse = (u: string | URL) => new URL(u);
  */
 export function resolve(from: string, to: string) {
   // we use a non-existent URL to check if its a relative URL
-  const fromUrl = new URL(convertPathToPosix(from), "https://aaa.nonexistanturl.com");
-  const resolvedUrl = new URL(convertPathToPosix(to), fromUrl);
-  const endSpaces = to.match(/(\s*)$/)?.[1] || "";
+  var fromUrl = new URL(convertPathToPosix(from), "https://aaa.nonexistanturl.com");
+  var resolvedUrl = new URL(convertPathToPosix(to), fromUrl);
+  var endSpaces = to.match(/(\s*)$/)?.[1] || "";
   if (resolvedUrl.hostname === "aaa.nonexistanturl.com") {
     // `from` is a relative URL.
-    const { pathname, search, hash } = resolvedUrl;
+    var { pathname, search, hash } = resolvedUrl;
     return pathname + search + hash + endSpaces;
   }
   return resolvedUrl.toString() + endSpaces;
@@ -48,9 +48,9 @@ export function cwd() {
     return location.href;
   }
 
-  const path = process.cwd();
+  var path = process.cwd();
 
-  const lastChar = path.slice(-1);
+  var lastChar = path.slice(-1);
   if (lastChar === "/" || lastChar === "\\") {
     return path;
   } else {
@@ -65,7 +65,7 @@ export function cwd() {
  * @returns
  */
 export function getProtocol(path: string | undefined) {
-  const match = protocolPattern.exec(path || "");
+  var match = protocolPattern.exec(path || "");
   if (match) {
     return match[1].toLowerCase();
   }
@@ -80,7 +80,7 @@ export function getProtocol(path: string | undefined) {
  * @returns
  */
 export function getExtension(path: any) {
-  const lastDot = path.lastIndexOf(".");
+  var lastDot = path.lastIndexOf(".");
   if (lastDot >= 0) {
     return stripQuery(path.substr(lastDot).toLowerCase());
   }
@@ -94,7 +94,7 @@ export function getExtension(path: any) {
  * @returns
  */
 export function stripQuery(path: any) {
-  const queryIndex = path.indexOf("?");
+  var queryIndex = path.indexOf("?");
   if (queryIndex >= 0) {
     path = path.substr(0, queryIndex);
   }
@@ -112,7 +112,7 @@ export function getHash(path: undefined | string) {
   if (!path) {
     return "#";
   }
-  const hashIndex = path.indexOf("#");
+  var hashIndex = path.indexOf("#");
   if (hashIndex >= 0) {
     return path.substring(hashIndex);
   }
@@ -129,7 +129,7 @@ export function stripHash(path?: string | undefined) {
   if (!path) {
     return "";
   }
-  const hashIndex = path.indexOf("#");
+  var hashIndex = path.indexOf("#");
   if (hashIndex >= 0) {
     path = path.substring(0, hashIndex);
   }
@@ -143,7 +143,7 @@ export function stripHash(path?: string | undefined) {
  * @returns
  */
 export function isHttp(path: string) {
-  const protocol = getProtocol(path);
+  var protocol = getProtocol(path);
   if (protocol === "http" || protocol === "https") {
     return true;
   } else if (protocol === undefined) {
@@ -170,7 +170,7 @@ export function isFileSystemPath(path: string | undefined) {
     return false;
   }
 
-  const protocol = getProtocol(path);
+  var protocol = getProtocol(path);
   return protocol === undefined || protocol === "file";
 }
 
@@ -194,13 +194,13 @@ export function fromFileSystemPath(path: string) {
   // Step 1: On Windows, replace backslashes with forward slashes,
   // rather than encoding them as "%5C"
   if (isWindows()) {
-    const projectDir = cwd();
-    const upperPath = path.toUpperCase();
-    const projectDirPosixPath = convertPathToPosix(projectDir);
-    const posixUpper = projectDirPosixPath.toUpperCase();
-    const hasProjectDir = upperPath.includes(posixUpper);
-    const hasProjectUri = upperPath.includes(posixUpper);
-    const isAbsolutePath =
+    var projectDir = cwd();
+    var upperPath = path.toUpperCase();
+    var projectDirPosixPath = convertPathToPosix(projectDir);
+    var posixUpper = projectDirPosixPath.toUpperCase();
+    var hasProjectDir = upperPath.includes(posixUpper);
+    var hasProjectUri = upperPath.includes(posixUpper);
+    var isAbsolutePath =
       win32?.isAbsolute(path) ||
       path.startsWith("http://") ||
       path.startsWith("https://") ||
@@ -218,7 +218,7 @@ export function fromFileSystemPath(path: string) {
   // Step 3: Manually encode characters that are not encoded by `encodeURI`.
   // This includes characters such as "#" and "?", which have special meaning in URLs,
   // but are just normal characters in a filesystem path.
-  for (const pattern of urlEncodePatterns) {
+  for (var pattern of urlEncodePatterns) {
     path = path.replace(pattern[0], pattern[1]);
   }
 
@@ -301,9 +301,9 @@ export function relative(from: string, to: string) {
     return resolve(from, to);
   }
 
-  const fromDir = path.dirname(stripHash(from));
-  const toPath = stripHash(to);
+  var fromDir = path.dirname(stripHash(from));
+  var toPath = stripHash(to);
 
-  const result = path.relative(fromDir, toPath);
+  var result = path.relative(fromDir, toPath);
   return result + getHash(to);
 }
